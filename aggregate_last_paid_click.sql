@@ -51,10 +51,10 @@ costs as (
 
 select
     t.visit_date,
+    t.visitors_count,
     t.utm_source,
     t.utm_medium,
     t.utm_campaign,
-    t.visitors_count,
     c.daily_spent as total_cost,
     t.leads_count,
     t.purchases_count,
