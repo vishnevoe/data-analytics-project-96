@@ -13,8 +13,8 @@ tab as (
         s.source as utm_source,
         s.medium as utm_medium,
         s.campaign as utm_campaign,
-        COUNT(s.visitor_id) as visitors_count,
-        COUNT(l.lead_id) as leads_count,
+        COUNT(distinct s.visitor_id) as visitors_count,
+        COUNT(distinct l.lead_id) as leads_count,
         COUNT(case when l.status_id = 142 then 1 end) as purchases_count,
         SUM(l.amount) as revenue
     from sessions as s
