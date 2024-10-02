@@ -88,10 +88,10 @@ select
         (SUM(revenue) - SUM(total_cost)) / SUM(total_cost) * 100, 2
     ) as roi
 from main
-where utm_source IN ('vk','yandex')
+where utm_source in ('vk', 'yandex')
 group by utm_source;
 
-/* Запрос, с помощью которого 
+/* Запрос, с помощью которого
 рассчитываются расходы на рекламу по дням */
 
 with last_paid_clicks as (
@@ -177,7 +177,7 @@ select
     utm_source as source,
     SUM(total_cost) as total_cost
 from main
-where utm_source IN ('vk','yandex')
+where utm_source in ('vk', 'yandex')
 group by visit_date, utm_source
 order by visit_date;
 
@@ -267,52 +267,52 @@ select
     SUM(total_cost) as total_cost,
     SUM(COALESCE(revenue, 0)) as revenue
 from main
-where utm_source IN ('vk','yandex')
+where utm_source in ('vk', 'yandex')
 group by utm_source;
 
 /* Каналы и визиты по дням */
 
 select
-    DATE_TRUNC('day', visit_date)::DATE as visit_date,
+    DATE_TRUNC('day', visit_date)::date as visit_date,
     source,
     medium,
     campaign,
     COUNT(visitor_id) as visitors_count
 from sessions
-group by DATE_TRUNC('day', visit_date)::DATE, source, medium, campaign
+group by DATE_TRUNC('day', visit_date)::date, source, medium, campaign
 order by visit_date asc, visitors_count desc;
 
 /* Каналы и визиты по неделям */
 
 select
-    DATE_TRUNC('week', visit_date)::DATE as visit_date,
+    DATE_TRUNC('week', visit_date)::date as visit_date,
     source,
     medium,
     campaign,
     COUNT(visitor_id) as visitors_count
 from sessions
-group by DATE_TRUNC('week', visit_date)::DATE, source, medium, campaign
+group by DATE_TRUNC('week', visit_date)::date, source, medium, campaign
 order by visit_date asc, visitors_count desc;
 
 /* Конверсия из визита (клика)
 в лид */
 
-SELECT
-    count(lead_id) AS count_leads,
-    count(visitor_id) AS count_visitors,
-    round(count(lead_id) * 100.0 / count(visitor_id), 2) AS conv
-FROM last_paid_clicks_full;
+select
+    COUNT(lead_id) as count_leads,
+    COUNT(visitor_id) as count_visitors,
+    ROUND(COUNT(lead_id) * 100.0 / COUNT(visitor_id), 2) as conv
+from last_paid_clicks_full;
 
 /* Конверсия из лида
 в оплату */
 
-SELECT
-    count(lead_id) AS count_leads,
-    count(CASE WHEN status_id = 142 THEN 1 END) AS purchases_count,
-    round(
-        count(CASE WHEN status_id = 142 THEN 1 END)
+select
+    COUNT(lead_id) as count_leads,
+    COUNT(case when status_id = 142 then 1 end) as purchases_count,
+    ROUND(
+        COUNT(case when status_id = 142 then 1 end)
         * 100.0
-        / count(lead_id),
+        / COUNT(lead_id),
         2
-    ) AS conv
-FROM last_paid_clicks_full;
+    ) as conv
+from last_paid_clicks_full;
